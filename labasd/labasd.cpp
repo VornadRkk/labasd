@@ -7,6 +7,10 @@ using namespace std;
 
 int main()
 {
-	cout << "Hello CMake." << endl;
-	return 0;
+	Tree A(5);
+	A.insert(4);
+	A.insert(3);
+	A.insert(7);
+	A.contains(7);
+	A.print();
 }
