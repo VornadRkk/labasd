@@ -3,28 +3,24 @@ using namespace std;
 
 class BinaryTree {
 private:
-    struct Tree {
+    struct Node {
         int key;
-        Tree* left;
-        Tree* right;
-
-        Tree(int _key) : key(_key), left(nullptr), right(nullptr) {}
-
-        ~Tree() {
+        Node* left;
+        Node* right;
+        Node(int _key) : key(_key), left(nullptr), right(nullptr) {}
+        ~Node() {
             delete left;
             delete right;
         }
-
         void print() {
             cout << key << endl;
             if (left) left->print();
             if (right) right->print();
         }
-
         bool insert(int _key) {
             if (_key < key) {
                 if (left == nullptr) {
-                    left = new Tree(_key);
+                    left = new Node(_key);
                 }
                 else {
                     return left->insert(_key);
@@ -32,7 +28,7 @@ private:
             }
             else if (_key > key) {
                 if (right == nullptr) {
-                    right = new Tree(_key);
+                    right = new Node(_key);
                 }
                 else {
                     return right->insert(_key);
@@ -40,7 +36,6 @@ private:
             }
             return false;
         }
-
         bool contains(int _key) {
             if (_key == key) return true;
             if (_key < key && left) return left->contains(_key);
@@ -49,17 +44,17 @@ private:
         }
     };
 
-    Tree* root;
+    Node* root;
 
-    Tree* copyTree(const Tree* node) {
+    Node* copyTree(const Node* node) {
         if (node == nullptr) return nullptr;
-        Tree* newNode = new Tree(node->key);
+        Node* newNode = new Node(node->key);
         newNode->left = copyTree(node->left);
         newNode->right = copyTree(node->right);
         return newNode;
     }
 
-    void erase(Tree*& node, int _key) {
+    void erase(Node*& node, int _key) {
         if (node == nullptr) return;
         if (_key < node->key) {
             erase(node->left, _key);
@@ -69,19 +64,19 @@ private:
         }
         else {
             if (node->left == nullptr) {
-                Tree* temp = node->right;
+                Node* temp = node->right;
                 node->right = nullptr;
                 delete node;
                 node = temp;
             }
             else if (node->right == nullptr) {
-                Tree* temp = node->left;
+                Node* temp = node->left;
                 node->left = nullptr;
                 delete node;
                 node = temp;
             }
             else {
-                Tree* minRight = node->right;
+                Node* minRight = node->right;
                 while (minRight->left != nullptr) {
                     minRight = minRight->left;
                 }
@@ -92,16 +87,13 @@ private:
     }
 
 public:
-    BinaryTree(int key) : root(new Tree(key)) {}
-
+    BinaryTree(int key) : root(new Node(key)) {}
     ~BinaryTree() {
         delete root;
     }
-
     BinaryTree(const BinaryTree& other) {
         root = copyTree(other.root);
     }
-
     BinaryTree& operator=(const BinaryTree& other) {
         if (this != &other) {
             delete root;
@@ -109,19 +101,15 @@ public:
         }
         return *this;
     }
-
     void print() {
         if (root != nullptr) root->print();
     }
-
     bool insert(int _key) {
         return root->insert(_key);
     }
-
     bool contains(int _key) {
         return root->contains(_key);
     }
-
     void erase(int _key) {
         erase(root, _key);
     }
