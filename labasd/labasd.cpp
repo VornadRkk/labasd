@@ -7,10 +7,8 @@ using namespace std;
 
 int main()
 {
-	Tree A(5);
+	BinaryTree A(5);
 	A.insert(4);
-	A.insert(3);
-	A.insert(7);
-	A.contains(7);
+	A.erase(4);
 	A.print();
 }
