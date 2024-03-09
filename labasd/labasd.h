@@ -198,11 +198,27 @@ vector<int> search_intersection(const BinaryTree::Node* A,const BinaryTree::Node
     }
     vector<int> left_intersection_A = search_intersection(A->left, B);
     vector<int> right_intersection_A = search_intersection(A->right, B);
+    vector<int> left_intersection_B = search_intersection(A, B->left);
+    vector<int> right_intersection_B = search_intersection(A, B->right);
     for (int i : left_intersection_A) {
-        arr_intersection.push_back(i);
+        if (!find(arr_intersection, i)) {
+            arr_intersection.push_back(i);
+        }
     }
     for (int i : right_intersection_A) {
-        arr_intersection.push_back(i);
+        if (!find(arr_intersection, i)) {
+            arr_intersection.push_back(i);
+        }
+    }
+    for (int i : left_intersection_B) {
+        if (!find(arr_intersection, i)) {
+            arr_intersection.push_back(i);
+        }
+    }
+    for (int i : right_intersection_B) {
+        if (!find(arr_intersection, i)) {
+            arr_intersection.push_back(i);
+        }
     }
     /*vector<int> task;
     task = repetitions(arr_intersection);*/
