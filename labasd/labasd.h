@@ -1,13 +1,15 @@
 ﻿#include <iostream>
+#include <vector>
 using namespace std;
 
 
 class BinaryTree {
-private:
+public:
     static int count_completion;
     static int count_search;
     static int count_del;
-    struct Node {
+    class Node {
+    public:
         int key;
         Node* left;
         Node* right;
@@ -73,8 +75,9 @@ private:
             return false;
         }
     };
+     Node* root;
 
-    Node* root;
+   
 
     Node* copyTree(const Node* node) {
         if (node == nullptr) return nullptr;
@@ -123,6 +126,12 @@ private:
     }
 
 public:
+    int get_key() {
+        return root->key;
+    }
+    Node* get_left() {
+        return root->left;
+    }
     bool Findelem(int _key) {
         return root->Findelem(_key);
     }
@@ -162,3 +171,42 @@ public:
         erase(root, _key);
     }
 };
+bool find(const vector<int>& task, int value) {
+    for (int element : task) {
+        if (element == value) {
+            return true;
+        }
+    }
+    return false;
+}
+vector<int> repetitions(vector<int>& other) {
+    vector<int> task;
+    for (int i = 0; i < other.size(); ++i) {
+        if (!find(task, other[i])) {
+            task.push_back(other[i]);
+        }
+    }
+    return task;
+}
+vector<int> search_intersection(const BinaryTree::Node* A,const BinaryTree::Node* B) {
+    vector<int> arr_intersection;
+    if (A == nullptr || B == nullptr) {
+        return arr_intersection;
+    }
+    if (A->key == B->key) {
+        arr_intersection.push_back(A->key);
+    }
+    vector<int> left_intersection_A = search_intersection(A->left, B);
+    vector<int> right_intersection_A = search_intersection(A->right, B);
+    for (int i : left_intersection_A) {
+        arr_intersection.push_back(i);
+    }
+    for (int i : right_intersection_A) {
+        arr_intersection.push_back(i);
+    }
+    /*vector<int> task;
+    task = repetitions(arr_intersection);*/
+    return arr_intersection;
+}
+
+    
