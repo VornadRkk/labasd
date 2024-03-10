@@ -179,15 +179,6 @@ bool find(const vector<int>& task, int value) {
     }
     return false;
 }
-vector<int> repetitions(vector<int>& other) {
-    vector<int> task;
-    for (int i = 0; i < other.size(); ++i) {
-        if (!find(task, other[i])) {
-            task.push_back(other[i]);
-        }
-    }
-    return task;
-}
 vector<int> search_intersection(const BinaryTree::Node* A,const BinaryTree::Node* B) {
     vector<int> arr_intersection;
     if (A == nullptr || B == nullptr) {
@@ -220,8 +211,52 @@ vector<int> search_intersection(const BinaryTree::Node* A,const BinaryTree::Node
             arr_intersection.push_back(i);
         }
     }
-    /*vector<int> task;
-    task = repetitions(arr_intersection);*/
+    return arr_intersection;
+}
+vector<int> converter(const BinaryTree::Node* other) {
+    vector <int> convert;
+    vector<int> convert_right;
+    vector<int> convert_left;
+    convert.push_back(other->key);
+    if(other->left != nullptr){
+        convert_left = converter(other->left);
+        
+    }
+    if (other->right != nullptr) {
+        convert_right = converter(other->right);
+    }
+    for (int i : convert_right) {
+        if (!find(convert, i)) {
+            convert.push_back(i);
+        }
+    }
+    for (int i : convert_left) {
+        if (!find(convert, i)) {
+            convert.push_back(i);
+        }
+    }
+    return convert;
+}
+vector<int> difference(const vector<int>& A,const vector<int>& B) {
+    vector<int> difference;
+    for (int i : A) {
+        if (!find(B, i) && !find(difference, i)) {
+            difference.push_back(i);
+        }
+    }
+    for (int i : B) {
+        if (!find(A, i) && !find(difference, i)) {
+            difference.push_back(i);
+        }
+    }
+    return difference;
+}
+vector<int> search_difference(const BinaryTree::Node* A, const BinaryTree::Node* B) {
+    vector<int> arr_intersection;
+    if (A == nullptr || B == nullptr) {
+        return arr_intersection;
+    }
+    arr_intersection = difference(converter(A), converter(B));
     return arr_intersection;
 }
 

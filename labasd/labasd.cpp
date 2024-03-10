@@ -21,10 +21,14 @@ int main()
 	test2.insert(5);
 	test2.insert(7);
 	test2.insert(8);
+	test1.insert(111);
+	test2.insert(220);
 	vector<int> task;
 	task = search_intersection(test1.root, test2.root);
-	for (int i = 0; i < task.size(); ++i) {
-		cout << task[i] << " ";
+	vector<int> task2;
+	task2 = search_difference(test1.root, test2.root);
+	for (int i = 0; i < task2.size(); ++i) {
+		cout << task2[i] << " ";
 	}
 	/*BinaryTree A(500);
 	BinaryTree B(600);
