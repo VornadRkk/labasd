@@ -1,10 +1,12 @@
 ﻿#include <iostream>
 #include <vector>
-using namespace std;
+#include <functional>
+
 
 
 class BinaryTree {
-public:
+    
+    // todo
     class Node {
     public:
         int key;
@@ -17,7 +19,7 @@ public:
             delete right;
         }
         void print() {
-            cout << key << endl;
+            std::cout << key << std::endl;
             if (left) left->print();
             if (right) right->print();
         }
@@ -40,7 +42,7 @@ public:
             }
             return false;
         }
-        bool contains(int _key) {
+        bool contains(int _key)const {
             if (_key == key) return true;
             if (_key < key && left) return left->contains(_key);
             if (_key > key && right) return right->contains(_key);
@@ -96,7 +98,7 @@ public:
                 delete node;
                 node = temp;
             }
-            else {
+            else if(node->right == nullptr && node->left == nullptr) {
                 Node* minRight = node->right;
                 while (minRight->left != nullptr) {
                     minRight = minRight->left;
@@ -104,16 +106,14 @@ public:
                 node->key = minRight->key;
                 erase(node->right, minRight->key);
             }
+            else {
+                delete node;
+            }
         }
     }
 
 public:
-    int get_key() {
-        return root->key;
-    }
-    Node* get_left() {
-        return root->left;
-    }
+    BinaryTree() :root(nullptr) {};
     bool Findelem(int _key) {
         return root->Findelem(_key);
     }
@@ -131,106 +131,75 @@ public:
         }
         return *this;
     }
-    void print() {
+    void print() const {
         if (root != nullptr) root->print();
     }
     bool insert(int _key) {
+        if (!root) {
+            root = new Node(_key);
+        }
         return root->insert(_key);
     }
-    bool contains(int _key) {
+    bool contains(int _key)const  {
         return root->contains(_key);
     }
     void erase(int _key) {
         erase(root, _key);
     }
+    static void walk(const Node* other,std::vector<int>& vec) {
+        if (!other) {
+            return;
+        }
+        walk(other->left, vec);
+        vec.push_back(other->key);
+        walk(other->right, vec);
+    }
+    std::vector<int> to_vector() const {
+        std::vector <int> convert;
+        walk(root, convert);
+        convert.push_back(root->key);
+        return convert;
+    }
+
+    //void walk(std::function<int> f) const {
+    //    //
+
+    //}
 };
-bool find(const vector<int>& task, int value) {
-    for (int element : task) {
-        if (element == value) {
-            return true;
-        }
+
+
+BinaryTree search_intersection(const BinaryTree& A,const BinaryTree& B) {
+    BinaryTree result;
+
+    for (auto i : A.to_vector()) {
+        if (B.contains(i))
+            result.insert(i);
     }
-    return false;
+    return result;
 }
-vector<int> search_intersection(const BinaryTree::Node* A,const BinaryTree::Node* B) {
-    vector<int> arr_intersection;
-    if (A == nullptr || B == nullptr) {
-        return arr_intersection;
+
+//vector<int> difference(const vector<int>& A,const vector<int>& B) {
+//    vector<int> difference;
+//    for (int i : A) {
+//        if (!find(B, i) && !find(difference, i)) {
+//            difference.push_back(i);
+//        }
+//    }
+//    for (int i : B) {
+//        if (!find(A, i) && !find(difference, i)) {
+//            difference.push_back(i);
+//        }
+//    }
+//    return difference;
+//}
+BinaryTree search_difference(const BinaryTree& A, const BinaryTree& B) {
+    BinaryTree result;
+
+    for (auto i : A.to_vector()) {
+        if (B.contains(i))
+            result.insert(i);
     }
-    if (A->key == B->key) {
-        arr_intersection.push_back(A->key);
-    }
-    vector<int> left_intersection_A = search_intersection(A->left, B);
-    vector<int> right_intersection_A = search_intersection(A->right, B);
-    vector<int> left_intersection_B = search_intersection(A, B->left);
-    vector<int> right_intersection_B = search_intersection(A, B->right);
-    for (int i : left_intersection_A) {
-        if (!find(arr_intersection, i)) {
-            arr_intersection.push_back(i);
-        }
-    }
-    for (int i : right_intersection_A) {
-        if (!find(arr_intersection, i)) {
-            arr_intersection.push_back(i);
-        }
-    }
-    for (int i : left_intersection_B) {
-        if (!find(arr_intersection, i)) {
-            arr_intersection.push_back(i);
-        }
-    }
-    for (int i : right_intersection_B) {
-        if (!find(arr_intersection, i)) {
-            arr_intersection.push_back(i);
-        }
-    }
-    return arr_intersection;
-}
-vector<int> converter(const BinaryTree::Node* other) {
-    vector <int> convert;
-    vector<int> convert_right;
-    vector<int> convert_left;
-    convert.push_back(other->key);
-    if(other->left != nullptr){
-        convert_left = converter(other->left);
-        
-    }
-    if (other->right != nullptr) {
-        convert_right = converter(other->right);
-    }
-    for (int i : convert_right) {
-        if (!find(convert, i)) {
-            convert.push_back(i);
-        }
-    }
-    for (int i : convert_left) {
-        if (!find(convert, i)) {
-            convert.push_back(i);
-        }
-    }
-    return convert;
-}
-vector<int> difference(const vector<int>& A,const vector<int>& B) {
-    vector<int> difference;
-    for (int i : A) {
-        if (!find(B, i) && !find(difference, i)) {
-            difference.push_back(i);
-        }
-    }
-    for (int i : B) {
-        if (!find(A, i) && !find(difference, i)) {
-            difference.push_back(i);
-        }
-    }
-    return difference;
-}
-vector<int> search_difference(const BinaryTree::Node* A, const BinaryTree::Node* B) {
-    vector<int> arr_intersection;
-    if (A == nullptr || B == nullptr) {
-        return arr_intersection;
-    }
-    arr_intersection = difference(converter(A), converter(B));
-    return arr_intersection;
+    return result;
 }
 
     
